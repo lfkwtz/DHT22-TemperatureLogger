@@ -28,7 +28,7 @@ class MailSender():
 		self.currentTimeAsString = configurations.get("currentTimeAsString")
 		self.currentTime = configurations.get("currentTime")
 		self.mailSendingTimeout = configurations.get("mailSendingTimeout")
-		
+
 		# Instantiate TimeFormatHelper
 		self.timeFormatHelper = TimeFormat()
 
@@ -51,19 +51,19 @@ class MailSender():
 		try:
 			# Get time when mail was sent out
 			timeSent = self._getDateTimeString()
-			# Persist mail sending time to mailsendlog. Use trigger to indicate event - it is set to triggedsensor
+			# Persist mail sending time to emaillog. Use trigger to indicate event - it is set to triggedsensor
 			self.dbController.setLastMailSentTime(timeSent,trigger)
 		except:
 			self.logger.error('Failed to set mail sent time to database\n',exc_info=True)
 			raise
-	
+
 	' Function for sending warning email '
 	def sendWarningEmail(self, msgContent):
 		self.logger.info("sendWarningEmail called")
-		
+
 		# Message to be sended with subject field
 		messageOut = 'Subject: %s\n\n%s' % (self.warningSubject ,msgContent)
-		
+
 		try:
 			# Send mail
 			self._sendMail(messageOut)
@@ -89,13 +89,13 @@ class MailSender():
 		try:
 			# Get time when mail was sent out
 			sendTime = self._getDateTimeString()
-			
+
 			# Call setLastSensorMailSentTime function and provide needed data
 			self.dbController.setLastSensorMailSentTime(sensor,sendTime,sensorData['temperature'],sensorData['humidity'])
 		except:
 			self.logger.error('Failed to set mail sent time to database\n',exc_info=True)
 			raise
-		
+
 	' Private function for sending emails '
 	def _sendMail(self, message):
 		self.logger.info("_sendMail called. Sending mail...")
@@ -127,7 +127,7 @@ class MailSender():
 				# Divide delta with seconds to get passed time in full hours
 				passedTime = delta // 3600
 				self.logger.info('Hours passed since current time and time when last mail was sended: %s',passedTime)
-			
+
 				self.logger.info('Comparing passed time with set timeout: %s h',float(self.mailSendingTimeout))
 				# Compare passed time for timeout value to see if enough full hours have passed
 				if passedTime >= float(self.mailSendingTimeout):
